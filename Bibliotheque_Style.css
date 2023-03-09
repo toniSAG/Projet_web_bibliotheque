@@ -1,0 +1,149 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+/* Styles généraux */
+body{
+    background-color: #adb5bd;
+}
+
+p{
+    margin-left: 15px;
+}
+
+.container{
+    width: auto;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.Form{
+    
+    
+    border: 1px solid white;
+    border-radius: 5px;
+    margin-top: 30px;
+    width: 500px;
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+}
+
+
+
+
+
+
+.col-md-12{
+    
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.row{
+    max-width: 100%;
+}
+
+
+
+/* Champs de texte et listes déroulantes*/
+
+.form-control, .form-select{
+    background-color: #f8f9fa;
+    width: 200px;
+    margin-top: 10px;
+}
+
+/* Boutons */
+
+.btn{
+    margin-top: 10px;
+    width: 200px;
+}
+
+
+
+
+/*
+Style de Bibliotheque_Acceuil
+*/
+
+.Bloc_Principal{
+    display: flex;
+    justify-content: center;
+}
+
+.Panneau_Acceuil{
+    width: 400px;
+    height: 300px;
+    padding-top: 15px;
+    border: 1px solid black;
+    align-content: center;
+    margin-top: 100px;
+    align-items: center;
+}
+
+.Bouton_content{
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    height: auto;
+    flex-direction: column;
+    /*background-color: red;*/
+}
+
+
+
+.Bouton_Acceuil{
+    width: 200px;
+    height: 50px;
+    margin-top: 5px;
+}
+
+
+
+
+
+
+/*Style de Bibliotheque_Abbonne*/
+
+.Abonne_First_Panel{
+    display: flex;
+    justify-content: center;
+    
+    margin-top: 50px;
+    
+}
+
+
+
+.Abonne_Textfield{
+    margin-top: 15px;
+    width: 200px;
+    height: 50px;
+}
+
+.Document_submit{
+    width: 150px;
+    height: 40px;
+    margin-top: 15px;
+}
+
+
+.Abonne_Print_Panel{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.Print_Abonne_Form{
+    text-align: center;
+
+
+}
