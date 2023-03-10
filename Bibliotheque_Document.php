@@ -17,6 +17,16 @@ include("Bibliotheque_Connect_Database.php");
 @$id_createur_bibliotheque = $_POST["id_createur_bibliotheque"];
 @$id_type_createur = $_POST["id_type_createur"];
 
+//informations des auteurs et dessinateur
+
+@$nom_createur_bibliotheque_auteur = $_POST["nom_createur_bibliotheque_auteur"];
+@$prenom_createur_bibliotheque_auteur = $_POST["prenom_createur_bibliotheque_auteur"];
+@$id_type_createur_auteur = $_POST["id_type_createur_auteur"];
+
+@$nom_createur_bibliotheque_dessinateur = $_POST["nom_createur_bibliotheque_dessinateur"];
+@$prenom_createur_bibliotheque_dessinateur = $_POST["prenom_createur_bibliotheque_dessinateur"];
+@$id_type_createur_dessinateur = $_POST["id_type_createur_dessinateur"];
+
 
 //variable de bouton et d'erreur
 @$enregistrer_livre = $_POST["enregistrer_livre"];
@@ -31,7 +41,7 @@ if(isset($_POST["enregistrer_livre"])){
 
     $queryTypeDoc = "SELECT id_type_document FROM type_document_bibliotheque WHERE libelle_type_document = 'livre'";
     $selectTypeDoc = $pdo->prepare($queryTypeDoc);
-    $selectTypeDoc->execute([$libelle_type_document]);
+$selectTypeDoc->execute(/*[$libelle_type_document]*/);
     $row_typeDoc = $selectTypeDoc->fetch(PDO::FETCH_ASSOC);
 
     if($row_typeDoc !== FALSE){
@@ -132,14 +142,14 @@ if(isset($_POST["enregistrer_livre"])){
          
          
 }
-/******************************************************************************************************************************************************************* */
+/******************************************************************** Enregistrement des BD *********************************************************************************************** */
 //Requêtes du formulaire d'enregistrement des BD
 
 elseif(isset($_POST["enregistrer_BD"])){
 
     $queryTypeDoc = "SELECT id_type_document FROM type_document_bibliotheque WHERE libelle_type_document = 'Bande dessinée'";
     $selectTypeDoc = $pdo->prepare($queryTypeDoc);
-    $selectTypeDoc->execute([$libelle_type_document]);
+    $selectTypeDoc->execute(/*[$libelle_type_document]*/);
     $row_typeDoc = $selectTypeDoc->fetch(PDO::FETCH_ASSOC);
 
     if($row_typeDoc !== FALSE){
@@ -166,12 +176,12 @@ elseif(isset($_POST["enregistrer_BD"])){
 
     //récupération des id auteur et dessinateur
     
-    $querySelectAuteur = "SELECT id_type_createur FROM type_createur WHERE id_type_createur = 'auteur'";
+    $querySelectAuteur = "SELECT id_type_createur FROM type_createur WHERE libelle_type_createur = 'auteur'";
     $selectTypeCreateurAuteur = $pdo->prepare($querySelectAuteur);
     $selectTypeCreateurAuteur->execute();
     $row_TypeCreateurAuteur = $selectTypeCreateurAuteur->fetch(PDO::FETCH_ASSOC);
 
-    $querySelectDessinateur = "SELECT id_type_createur FROM type_createur WHERE id_type_createur = 'dessinateur'";
+    $querySelectDessinateur = "SELECT id_type_createur FROM type_createur WHERE libelle_type_createur = 'dessinateur'";
     $selectTypeCreateurDessinateur = $pdo->prepare($querySelectDessinateur);
     $selectTypeCreateurDessinateur->execute();
     $row_TypeCreateurDessinateur = $selectTypeCreateurDessinateur->fetch(PDO::FETCH_ASSOC);
@@ -188,14 +198,23 @@ elseif(isset($_POST["enregistrer_BD"])){
 
     $queryInsertAuteur = "INSERT INTO createur_bibliotheque (nom_createur_bibliotheque, prenom_createur_bibliotheque, id_type_createur) 
     VALUES (:nom_createur_bibliotheque, :prenom_createur_bibliotheque, :id_type_createur)";
+    $insertAuteur = $pdo->prepare($queryInsertAuteur);
+
+    $donnees1 = $insertAuteur->execute([
+        ':nom_createur_bibliotheque' => $nom_createur_bibliotheque_auteur,
+        ':prenom_createur_bibliotheque' => $prenom_createur_bibliotheque_auteur,
+        ':id_type_createur' => $id_type_createur_auteur
+    ]);
+
+
     $queryInsertDessinateur = "INSERT INTO createur_bibliotheque (nom_createur_bibliotheque, prenom_createur_bibliotheque, id_type_createur) 
     VALUES (:nom_createur_bibliotheque, :prenom_createur_bibliotheque, :id_type_createur)";
-    $insertCreateur = $pdo->prepare($queryInsertAuteur, $queryInsertDessinateur);
+    $insertDessinateur = $pdo->prepare($queryInsertDessinateur);
 
-    $donnees = $insertCreateur->execute([
-        ':nom_createur_bibliotheque' => $nom_createur_bibliotheque,
-        ':prenom_createur_bibliotheque' => $prenom_createur_bibliotheque,
-        ':id_type_createur' => $id_type_createur
+    $donnees2 = $insertDessinateur->execute([
+        ':nom_createur_bibliotheque' => $nom_createur_bibliotheque_dessinateur,
+        ':prenom_createur_bibliotheque' => $prenom_createur_bibliotheque_dessinateur,
+        ':id_type_createur' => $id_type_createur_dessinateur
     ]);
 
     //Sélection de l'ISBN BD pour insertion dans la table créateur_document_bibliothèque
@@ -209,29 +228,48 @@ elseif(isset($_POST["enregistrer_BD"])){
     }
 
     //sélection de l'ID créateur pour insertion dans la table créateur_document_bibliothèque
-    $queryIDCreateur = "SELECT id_createur_bibliotheque FROM createur_bibliotheque WHERE nom_createur_bibliotheque = ? AND prenom_createur_bibliotheque = ?";
-         $selectIDCreateur = $pdo->prepare($queryIDCreateur);
-         $selectIDCreateur->execute([$nom_createur_bibliotheque, $prenom_createur_bibliotheque]);
-         $row_IDCreateur = $selectIDCreateur->fetch(PDO::FETCH_ASSOC);
+    $queryIDAuteur = "SELECT id_createur_bibliotheque FROM createur_bibliotheque WHERE nom_createur_bibliotheque = ? AND prenom_createur_bibliotheque = ? AND id_type_createur = ?";
+         $selectIDAuteur = $pdo->prepare($queryIDAuteur);
+         $selectIDAuteur->execute([$nom_createur_bibliotheque_auteur, $prenom_createur_bibliotheque_auteur, $id_type_createur_auteur]);
+         $row_IDAuteur = $selectIDAuteur->fetch(PDO::FETCH_ASSOC);
 
-         if($row_IDCreateur !== FALSE){
-            $id_createur_bibliotheque = $row_IDCreateur['id_createur_bibliotheque'];
+         if($row_IDAuteur !== FALSE){
+            $id_createur_bibliotheque_auteur = $row_IDAuteur['id_createur_bibliotheque'];
          }
 
-         $queryCreaDoc = "INSERT INTO createur_document_bibliotheque (ISBN_document, id_createur_bibliotheque) VALUES (:ISBN_document, :id_createur_bibliotheque);";
-         $insertCreaDoc = $pdo->prepare(
-            $queryCreaDoc
+    $queryIDDessinateur = "SELECT id_createur_bibliotheque FROM createur_bibliotheque WHERE nom_createur_bibliotheque = ? AND prenom_createur_bibliotheque = ? AND id_type_createur = ?";
+    $selectIDDessinateur = $pdo->prepare($queryIDDessinateur);
+    $selectIDDessinateur->execute([$nom_createur_bibliotheque_dessinateur, $prenom_createur_bibliotheque_dessinateur, $id_type_createur_dessinateur]);
+    $rowIDDessinateur = $selectIDDessinateur->fetch(PDO::FETCH_ASSOC);
+
+    if($rowIDDessinateur !== FALSE){
+        $id_createur_bibliotheque_dessinateur = $row_IDAuteur['id_createur_bibliotheque'];
+    }
+
+         $queryCreaDocAuteur = "INSERT INTO createur_document_bibliotheque (ISBN_document, id_createur_bibliotheque) VALUES (:ISBN_document, :id_createur_bibliotheque);";
+         $insertCreaDocAuteur = $pdo->prepare(
+            $queryCreaDocAuteur
          );
 
-        $insertCreaDoc->execute([
+        $insertCreaDocAuteur->execute([
             ':ISBN_document' => $ISBN_document,
-            ':id_createur_bibliotheque' => $id_createur_bibliotheque
+            ':id_createur_bibliotheque' => $id_createur_bibliotheque_auteur
+         ]);
+
+         $queryCreaDocDessinateur = "INSERT INTO createur_document_bibliotheque (ISBN_document, id_createur_bibliotheque) VALUES (:ISBN_document, :id_createur_bibliotheque);";
+         $insertCreaDocDessinateur = $pdo->prepare(
+            $queryCreaDocDessinateur
+         );
+
+        $insertCreaDocDessinateur->execute([
+            ':ISBN_document' => $ISBN_document,
+            ':id_createur_bibliotheque' => $id_createur_bibliotheque_dessinateur
          ]);
         
         
         // $insert = $donnees->fetchAll();
 
-        if($insertCreaDoc){
+        if($insertCreaDocAuteur && $insertCreaDocDessinateur){
             echo "<script>alert('Nouveau document enregistré avec succès.')</script>";
         }else{
             echo "<script>alert('Erreur lors de l'enregistrement du document.')</script>";
@@ -387,17 +425,17 @@ elseif(isset($_POST["enregistrer_BD"])){
               <option>Bande dessinée</option>
               </select>
 
-              <input class = "form-control" type = "text" name = "nom_createur_bibliotheque" placeholder = "Nom du créateur"/>
-              <input class = "form-control" type = "text" name = "prenom_createur_bibliotheque" placeholder = "Prénom du créateur"/>
+              <input class = "form-control" type = "text" name = "nom_createur_bibliotheque_auteur" placeholder = "Nom du créateur"/>
+              <input class = "form-control" type = "text" name = "prenom_createur_bibliotheque_auteur" placeholder = "Prénom du créateur"/>
               <label for = "role_createur">Rôle du créateur</label>
-              <select class = "form-select" id = "role_createur" name = "libelle_type_createur">
+              <select class = "form-select" id = "role_createur" name = "id_type_createur_auteur">
               <option>auteur</option>
               </select>
 
-              <input class = "form-control" type = "text" name = "nom_createur_bibliotheque" placeholder = "Nom du créateur"/>
-              <input class = "form-control" type = "text" name = "prenom_createur_bibliotheque" placeholder = "Prénom du créateur"/>
+              <input class = "form-control" type = "text" name = "nom_createur_bibliotheque_dessinateur" placeholder = "Nom du créateur"/>
+              <input class = "form-control" type = "text" name = "prenom_createur_bibliotheque_dessinateur" placeholder = "Prénom du créateur"/>
               <label for = "role_createur">Rôle du créateur</label>
-              <select class = "form-select" id = "role_createur" name = "libelle_type_createur">
+              <select class = "form-select" id = "role_createur" name = "id_type_createur_dessinateur">
               <option>dessinateur</option>
               </select>
 
